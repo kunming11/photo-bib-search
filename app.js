@@ -43,14 +43,7 @@ const els = {
   statSynced: document.getElementById("stat-synced"),
   recentSection: document.getElementById("recent-section"),
   recentGrid: document.getElementById("recent-grid"),
-  syncNowBtn: document.getElementById("sync-now-btn"),
-  reloadBtn: document.getElementById("reload-index-btn"),
-  syncHint: document.getElementById("sync-hint"),
 };
-
-/** @type {string} */
-let syncWorkflowUrl =
-  "https://github.com/kunming11/photo-bib-search/actions/workflows/sync-drive.yml";
 
 function normalizeBib(value) {
   return String(value ?? "").trim();
@@ -208,9 +201,9 @@ function updateStats(album) {
   els.statTotal.textContent = String(album.total ?? album.photos.length);
   els.statRecent.textContent = String(album.recentAddedCount ?? album.recentAdded?.length ?? 0);
   if (album.updatedAt) {
-    els.statSynced.textContent = `最後同步：${formatTaiwanTime(album.updatedAt)}（${formatRelative(album.updatedAt)}）· 約每 5 分鐘自動更新`;
+    els.statSynced.textContent = `最後同步：${formatTaiwanTime(album.updatedAt)}（${formatRelative(album.updatedAt)}）· 硬碟變更後約 10 分鐘內自動更新`;
   } else {
-    els.statSynced.textContent = "尚未有自動同步時間戳，上傳硬碟後請稍候重新整理";
+    els.statSynced.textContent = "尚未有自動同步時間戳，請稍候再重新整理頁面";
   }
 }
 
@@ -407,7 +400,6 @@ async function loadPhotoIndex() {
   }
 
   try {
-    // 加時間戳避免瀏覽器快取舊索引
     const res = await fetch(`./data.json?t=${Date.now()}`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const album = normalizeAlbumData(await res.json());
@@ -424,47 +416,9 @@ async function loadPhotoIndex() {
   }
 }
 
-/**
- * 讀取設定（同步按鈕網址等）
- */
-async function loadConfig() {
-  try {
-    const res = await fetch(`./config.json?t=${Date.now()}`, { cache: "no-store" });
-    if (!res.ok) return;
-    const cfg = await res.json();
-    if (cfg.syncWorkflowUrl) syncWorkflowUrl = String(cfg.syncWorkflowUrl);
-  } catch (err) {
-    console.warn("config.json 無法載入，使用預設同步網址", err);
-  }
-}
-
-function openManualSync() {
-  window.open(syncWorkflowUrl, "_blank", "noopener,noreferrer");
-  setStatus(
-    "已開啟 GitHub Actions。請按 Run workflow → Run，完成後再按「重新載入相簿」。",
-    "ok",
-  );
-  if (els.syncHint) {
-    els.syncHint.innerHTML =
-      '已開啟同步頁面。在 GitHub 按 <span class="font-medium text-ink-800">Run workflow</span>，約 1～2 分鐘後回來按「重新載入相簿」。';
-  }
-}
-
 els.form.addEventListener("submit", (event) => {
   event.preventDefault();
   searchByBib(els.input.value);
 });
 
-els.syncNowBtn?.addEventListener("click", openManualSync);
-els.reloadBtn?.addEventListener("click", async () => {
-  els.reloadBtn.disabled = true;
-  els.reloadBtn.textContent = "載入中…";
-  try {
-    await loadPhotoIndex();
-  } finally {
-    els.reloadBtn.disabled = false;
-    els.reloadBtn.textContent = "重新載入相簿";
-  }
-});
-
-loadConfig().then(() => loadPhotoIndex());
+loadPhotoIndex();

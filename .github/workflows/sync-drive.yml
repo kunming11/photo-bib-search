@@ -2,9 +2,17 @@ name: Sync Google Drive photos
 
 on:
   schedule:
-    # 每 5 分鐘（GitHub 繁忙時可能略延遲）
-    - cron: "*/5 * * * *"
+    # GitHub 繁忙時會延遲；改每 10 分鐘較穩
+    - cron: "*/10 * * * *"
   workflow_dispatch:
+  # 推送程式碼時也順便同步一次，避免只有排程卻遲遲不跑
+  push:
+    branches: [main]
+    paths-ignore:
+      - "data.json"
+      - "README.md"
+      - "DEPLOY.md"
+      - "CURSOR_PROMPT.md"
 
 permissions:
   contents: write
@@ -19,6 +27,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # 讓 bot 之後能 push
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
