@@ -81,7 +81,7 @@ function extractDriveId(value) {
 function getPreviewUrl(record) {
   const driveId = extractDriveId(record.driveId || "") || extractDriveId(record.file || "");
   if (driveId) {
-    return `https://drive.google.com/thumbnail?id=${encodeURIComponent(driveId)}&sz=w1600`;
+    return `https://drive.google.com/thumbnail?id=${encodeURIComponent(driveId)}&sz=w2000`;
   }
   return encodeAssetUrl(record.file || "");
 }
@@ -137,19 +137,6 @@ function formatTaiwanTime(iso) {
  * @param {string=} iso
  * @returns {string}
  */
-function formatRelative(iso) {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  const diffMs = Date.now() - d.getTime();
-  const mins = Math.round(diffMs / 60000);
-  if (mins < 1) return "剛剛";
-  if (mins < 60) return `${mins} 分鐘前`;
-  const hours = Math.round(mins / 60);
-  if (hours < 48) return `${hours} 小時前`;
-  const days = Math.round(hours / 24);
-  return `${days} 天前`;
-}
 
 function setStatus(message, tone = "info") {
   els.status.textContent = message;
@@ -202,80 +189,64 @@ function updateStats(album) {
 }
 
 /**
+ * 搜尋結果卡片：上方完整預覽（不裁切），下方資訊＋下載
+ * 底部品牌區先保持簡潔，之後可再換成正式活動視覺
  * @param {PhotoRecord} record
  * @param {number} index
- * @param {{ showAddedAt?: boolean }} [opts]
  */
-function createPhotoCard(record, index, opts = {}) {
+function createPhotoCard(record, index) {
   const card = document.createElement("article");
   card.className =
     "photo-card fade-in overflow-hidden rounded-2xl bg-white ring-1 ring-ink-200/70";
   card.style.animationDelay = `${Math.min(index, 8) * 40}ms`;
 
   const imgWrap = document.createElement("div");
-  imgWrap.className = "relative aspect-[4/3] overflow-hidden bg-ink-100";
+  imgWrap.className = "photo-stage";
 
   const img = document.createElement("img");
   img.src = getPreviewUrl(record);
   img.alt = `活動照片 ${displayName(record)}`;
   img.loading = "lazy";
   img.referrerPolicy = "no-referrer";
-  img.className = "h-full w-full object-cover";
   img.onerror = () => img.replaceWith(createImageFallback());
   imgWrap.appendChild(img);
 
-  if (opts.showAddedAt && record.addedAt) {
-    const badge = document.createElement("span");
-    badge.className =
-      "absolute left-3 top-3 rounded-lg bg-ink-900/80 px-2.5 py-1 font-display text-[11px] font-semibold text-white backdrop-blur";
-    badge.textContent = `新增 ${formatTaiwanTime(record.addedAt)}`;
-    imgWrap.appendChild(badge);
-  }
-
   const body = document.createElement("div");
-  body.className = "space-y-3 p-4";
+  body.className = "space-y-4 px-5 pb-5 pt-4";
 
-  const title = document.createElement("h2");
-  title.className = "truncate font-display text-sm font-semibold text-ink-800";
-  title.textContent = displayName(record);
-  title.title = displayName(record);
+  // 底部品牌／活動資訊（之後可再換成你的正式設計）
+  const brand = document.createElement("div");
+  brand.className = "text-center";
+  brand.innerHTML = `
+    <p class="font-display text-xs font-semibold tracking-[0.18em] text-ember-600 uppercase">Corporate Event</p>
+    <p class="mt-1 font-display text-base font-semibold text-ink-900">活動相簿</p>
+  `;
 
-  const bibRow = document.createElement("p");
-  bibRow.className = "flex flex-wrap gap-1.5";
-  const bibs = record.bibs || [];
-  if (bibs.length) {
-    bibs.forEach((bib) => {
-      const chip = document.createElement("span");
-      chip.className =
-        "rounded-md bg-ink-50 px-2 py-0.5 font-display text-xs font-medium tracking-wide text-ink-700 ring-1 ring-ink-200";
-      chip.textContent = `#${normalizeBib(bib)}`;
-      bibRow.appendChild(chip);
-    });
-  } else {
-    const chip = document.createElement("span");
-    chip.className =
-      "rounded-md bg-amber-50 px-2 py-0.5 font-display text-xs font-medium text-amber-800 ring-1 ring-amber-200";
-    chip.textContent = "號碼待辨識";
-    bibRow.appendChild(chip);
-  }
-
-  if (opts.showAddedAt && record.addedAt) {
+  const meta = document.createElement("div");
+  meta.className = "space-y-1 text-center text-sm text-ink-700/80";
+  const idLine = document.createElement("p");
+  idLine.textContent = `照片：${displayName(record)}`;
+  meta.appendChild(idLine);
+  if (record.addedAt) {
     const timeLine = document.createElement("p");
-    timeLine.className = "text-xs text-ink-700/65";
-    timeLine.textContent = `${formatRelative(record.addedAt)} · ${formatTaiwanTime(record.addedAt)}`;
-    body.append(title, timeLine, bibRow);
-  } else {
-    body.append(title, bibRow);
+    timeLine.textContent = `同步時間：${formatTaiwanTime(record.addedAt)}`;
+    meta.appendChild(timeLine);
+  }
+  if (record.bibs?.length) {
+    const bibLine = document.createElement("p");
+    bibLine.className = "font-display text-xs tracking-wide text-ink-700";
+    bibLine.textContent = `號碼布：${record.bibs.map((b) => `#${normalizeBib(b)}`).join("  ")}`;
+    meta.appendChild(bibLine);
   }
 
   const downloadBtn = document.createElement("button");
   downloadBtn.type = "button";
   downloadBtn.className =
-    "inline-flex w-full items-center justify-center rounded-xl bg-ember-500 px-4 py-2.5 font-display text-sm font-semibold text-white transition hover:bg-ember-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-800";
-  downloadBtn.textContent = record.driveId ? "開啟／下載原圖" : "下載照片";
+    "inline-flex w-full items-center justify-center rounded-xl bg-[#1d7fe0] px-4 py-3.5 font-display text-base font-semibold text-white transition hover:bg-[#1666b8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-800";
+  downloadBtn.textContent = "Download";
   downloadBtn.addEventListener("click", () => downloadPhoto(record));
-  body.appendChild(downloadBtn);
 
+  body.append(brand, meta, downloadBtn);
   card.append(imgWrap, body);
   return card;
 }
@@ -283,7 +254,7 @@ function createPhotoCard(record, index, opts = {}) {
 function createImageFallback() {
   const fallback = document.createElement("div");
   fallback.className =
-    "flex h-full w-full items-center justify-center bg-ink-100 px-4 text-center text-sm text-ink-700/70";
+    "flex min-h-[240px] w-full items-center justify-center px-4 text-center text-sm text-white/80";
   fallback.textContent = "預覽無法載入（請確認 Drive 已設「知道連結的任何人」可檢視）";
   return fallback;
 }

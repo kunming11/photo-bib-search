@@ -56,8 +56,25 @@
         transition: transform 0.25s ease, box-shadow 0.25s ease;
       }
       .photo-card:hover {
-        transform: translateY(-4px);
+        transform: translateY(-2px);
         box-shadow: 0 22px 40px -20px rgba(19, 36, 31, 0.35);
+      }
+      /* 預覽區：完整入鏡，不裁切臉／全身 */
+      .photo-stage {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: min(62vh, 560px);
+        max-height: 70vh;
+        background:
+          radial-gradient(ellipse at center, #2a3d36 0%, #13241f 70%);
+      }
+      .photo-stage img {
+        max-width: 100%;
+        max-height: min(62vh, 560px);
+        width: auto;
+        height: auto;
+        object-fit: contain;
       }
       .fade-in {
         animation: fadeUp 0.35s ease both;
@@ -129,7 +146,7 @@
         >
           <span id="results-count"></span>
         </div>
-        <div id="results-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
+        <div id="results-grid" class="mx-auto grid max-w-md grid-cols-1 gap-8"></div>
         <div
           id="empty-state"
           class="mx-auto mt-6 max-w-md rounded-2xl border border-dashed border-ink-200 bg-white/50 px-6 py-10 text-center"
