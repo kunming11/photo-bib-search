@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-03T15:46:24Z",
+  "updatedAt": "2026-08-03T15:54:59Z",
   "folderId": "1Vajva5anAFBZA03gd1UsO9MjBO3yPEKs",
   "total": 8,
   "recentAddedCount": 8,
@@ -8,25 +8,37 @@
       "name": "截圖 2026-08-03 晚上11.36.09.png",
       "driveId": "1iFzw3_Om7DTxENmBkC5A_IP9PJs7USww",
       "addedAt": "2026-08-03T15:46:24Z",
-      "bibs": []
+      "bibs": [
+        "09316",
+        "03612",
+        "06356",
+        "05848",
+        "08799"
+      ]
     },
     {
       "name": "截圖 2026-08-03 晚上11.36.19.png",
       "driveId": "1CIebhePSxZ830rhqEv-UHfurKoNz2tjE",
       "addedAt": "2026-08-03T15:46:24Z",
-      "bibs": []
+      "bibs": [
+        "06335"
+      ]
     },
     {
       "name": "截圖 2026-08-03 晚上11.36.33.png",
       "driveId": "1oCoWkiWwh-OJleGmYCGip3q-7AGcWhmg",
       "addedAt": "2026-08-03T15:46:24Z",
-      "bibs": []
+      "bibs": [
+        "05343"
+      ]
     },
     {
       "name": "截圖 2026-08-03 晚上11.30.09.png",
       "driveId": "19GSqonNHpwJW--CENDPTDtuKj7nlHnOT",
       "addedAt": "2026-08-03T15:35:46Z",
-      "bibs": []
+      "bibs": [
+        "06380"
+      ]
     },
     {
       "name": "截圖 2026-08-03 晚上11.07.48.png",
@@ -113,25 +125,37 @@
     {
       "name": "截圖 2026-08-03 晚上11.30.09.png",
       "driveId": "19GSqonNHpwJW--CENDPTDtuKj7nlHnOT",
-      "bibs": [],
+      "bibs": [
+        "06380"
+      ],
       "addedAt": "2026-08-03T15:35:46Z"
     },
     {
       "name": "截圖 2026-08-03 晚上11.36.09.png",
       "driveId": "1iFzw3_Om7DTxENmBkC5A_IP9PJs7USww",
-      "bibs": [],
+      "bibs": [
+        "09316",
+        "03612",
+        "06356",
+        "05848",
+        "08799"
+      ],
       "addedAt": "2026-08-03T15:46:24Z"
     },
     {
       "name": "截圖 2026-08-03 晚上11.36.19.png",
       "driveId": "1CIebhePSxZ830rhqEv-UHfurKoNz2tjE",
-      "bibs": [],
+      "bibs": [
+        "06335"
+      ],
       "addedAt": "2026-08-03T15:46:24Z"
     },
     {
       "name": "截圖 2026-08-03 晚上11.36.33.png",
       "driveId": "1oCoWkiWwh-OJleGmYCGip3q-7AGcWhmg",
-      "bibs": [],
+      "bibs": [
+        "05343"
+      ],
       "addedAt": "2026-08-03T15:46:24Z"
     }
   ]
