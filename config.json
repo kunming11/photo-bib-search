@@ -1,4 +1,5 @@
 {
   "driveFolderId": "1Vajva5anAFBZA03gd1UsO9MjBO3yPEKs",
-  "driveFolderUrl": "https://drive.google.com/drive/folders/1Vajva5anAFBZA03gd1UsO9MjBO3yPEKs?usp=sharing"
+  "driveFolderUrl": "https://drive.google.com/drive/folders/1Vajva5anAFBZA03gd1UsO9MjBO3yPEKs?usp=sharing",
+  "syncWorkflowUrl": "https://github.com/kunming11/photo-bib-search/actions/workflows/sync-drive.yml"
 }
