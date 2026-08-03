@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>活動相簿｜號碼布搜尋</title>
     <meta name="description" content="輸入號碼布編號，快速找到並下載屬於你的活動照片。" />
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -44,7 +43,6 @@
       rel="stylesheet"
     />
     <style>
-      /* 柔和網格背景，營造活動現場氛圍（非扁平單色） */
       body {
         background-color: #f4f7f6;
         background-image:
@@ -54,7 +52,6 @@
           linear-gradient(90deg, rgba(30, 51, 45, 0.03) 1px, transparent 1px);
         background-size: auto, auto, 48px 48px, 48px 48px;
       }
-
       .photo-card {
         transition: transform 0.25s ease, box-shadow 0.25s ease;
       }
@@ -62,7 +59,6 @@
         transform: translateY(-4px);
         box-shadow: 0 22px 40px -20px rgba(19, 36, 31, 0.35);
       }
-
       .fade-in {
         animation: fadeUp 0.35s ease both;
       }
@@ -76,8 +72,6 @@
           transform: translateY(0);
         }
       }
-
-      /* 搜尋鈕按下回饋 */
       #search-btn:active {
         transform: scale(0.98);
       }
@@ -85,8 +79,7 @@
   </head>
   <body class="min-h-screen font-body text-ink-900 antialiased">
     <div class="mx-auto flex min-h-screen max-w-6xl flex-col px-4 pb-16 pt-10 sm:px-6 lg:px-8">
-      <!-- 品牌與標題（單一焦點：搜尋） -->
-      <header class="mb-10 text-center sm:mb-14">
+      <header class="mb-8 text-center sm:mb-10">
         <p class="font-display text-sm font-semibold tracking-[0.2em] text-ember-600 uppercase">
           Corporate Event Album
         </p>
@@ -94,11 +87,27 @@
           活動相簿
         </h1>
         <p class="mx-auto mt-3 max-w-xl text-base text-ink-700/80 sm:text-lg">
-          輸入你的號碼布編號，立刻找到屬於你的活動照片並免費下載。
+          輸入號碼布編號搜尋；硬碟新增照片後約數分鐘會自動同步上線。
         </p>
       </header>
 
-      <!-- 搜尋區塊 -->
+      <!-- 相簿統計 -->
+      <section
+        id="album-stats"
+        class="mx-auto mb-8 grid w-full max-w-xl grid-cols-2 gap-3 sm:gap-4"
+        aria-label="相簿統計"
+      >
+        <div class="rounded-2xl bg-white/90 px-4 py-4 text-center shadow-soft ring-1 ring-ink-200/60">
+          <p class="font-display text-xs font-semibold tracking-wide text-ink-700/70 uppercase">目前總張數</p>
+          <p id="stat-total" class="mt-1 font-display text-3xl font-bold text-ink-900">—</p>
+        </div>
+        <div class="rounded-2xl bg-white/90 px-4 py-4 text-center shadow-soft ring-1 ring-ink-200/60">
+          <p class="font-display text-xs font-semibold tracking-wide text-ink-700/70 uppercase">最近新增</p>
+          <p id="stat-recent" class="mt-1 font-display text-3xl font-bold text-ember-600">—</p>
+        </div>
+        <p id="stat-synced" class="col-span-2 text-center text-xs text-ink-700/65">同步資訊載入中…</p>
+      </section>
+
       <section
         class="mx-auto w-full max-w-xl rounded-2xl bg-white/90 p-5 shadow-soft ring-1 ring-ink-200/60 backdrop-blur sm:p-7"
         aria-label="號碼布搜尋"
@@ -112,7 +121,7 @@
             name="bib"
             type="text"
             inputmode="numeric"
-            placeholder="例如 1024"
+            placeholder="例如 15176"
             class="w-full flex-1 rounded-xl border border-ink-200 bg-ink-50 px-4 py-3 text-lg tracking-wide text-ink-900 outline-none transition placeholder:text-ink-200 focus:border-ember-500 focus:ring-2 focus:ring-ember-400/40"
             maxlength="16"
             required
@@ -128,7 +137,18 @@
         <p id="status-text" class="mt-3 min-h-[1.25rem] text-sm text-ink-700/70" role="status" aria-live="polite"></p>
       </section>
 
-      <!-- 結果網格 -->
+      <!-- 最近新增 -->
+      <section id="recent-section" class="mt-10 hidden" aria-label="最近新增照片">
+        <div class="mb-4 flex items-end justify-between gap-3">
+          <div>
+            <h2 class="font-display text-xl font-semibold text-ink-900">最近新增</h2>
+            <p class="mt-1 text-sm text-ink-700/70">硬碟上傳後同步進來的照片（含時間）</p>
+          </div>
+        </div>
+        <div id="recent-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
+      </section>
+
+      <!-- 搜尋結果 -->
       <section class="mt-10 flex-1" aria-label="搜尋結果">
         <div
           id="results-meta"
@@ -136,24 +156,20 @@
         >
           <span id="results-count"></span>
         </div>
-        <div
-          id="results-grid"
-          class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
-        ></div>
-        <!-- 初始／空狀態 -->
+        <div id="results-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
         <div
           id="empty-state"
           class="mx-auto mt-8 max-w-md rounded-2xl border border-dashed border-ink-200 bg-white/50 px-6 py-12 text-center"
         >
           <p class="font-display text-lg font-semibold text-ink-800">準備好了嗎？</p>
           <p class="mt-2 text-sm leading-relaxed text-ink-700/75">
-            在上方輸入號碼布編號後按下搜尋，符合條件的照片會顯示在這裡。
+            在上方輸入號碼布編號後按下搜尋；下方也會顯示最近從硬碟同步的新照片。
           </p>
         </div>
       </section>
 
       <footer class="mt-16 border-t border-ink-200/70 pt-6 text-center text-xs text-ink-700/60">
-        企業內部活動福利相簿 · 僅供員工下載使用
+        企業內部活動福利相簿 · 硬碟約每 5 分鐘自動同步
       </footer>
     </div>
 

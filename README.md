@@ -9,9 +9,18 @@ OCR 只在本機批次執行；前端為純靜態網頁，零伺服器維護費�
 - 一張照片可對應多組號碼（`bibs` 陣列）
 - 企業內部福利，無金流
 
-## 快速開始
+## 自動同步（Google Drive → 網站）
 
-### 1. 本機預覽前端
+GitHub Actions 約 **每 5 分鐘** 讀取公開硬碟資料夾，更新 `data.json` 並推送；GitHub Pages 會自動重新發布。
+
+- 網頁顯示：**目前總張數**、**最近新增**、**最後同步時間**
+- 新上傳的照片會出現在「最近新增」（含時間）
+- **號碼布搜尋**仍依賴索引裡的 `bibs`；全新照片若顯示「號碼待辨識」，請在本機對新圖跑 `process_photos.py` 後把號碼合併進 `data.json`（或跟我說一聲代勞）
+
+手動觸發同步：GitHub repo → Actions → **Sync Google Drive photos** → Run workflow
+
+資料夾 ID 設定於 `config.json`。
+
 
 ```bash
 cd "/Users/kunming/篩選照片網站"
