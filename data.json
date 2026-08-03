@@ -1,9 +1,36 @@
 {
-  "updatedAt": "2026-08-03T15:54:59Z",
+  "updatedAt": "2026-08-03T16:29:47Z",
   "folderId": "1Vajva5anAFBZA03gd1UsO9MjBO3yPEKs",
-  "total": 8,
-  "recentAddedCount": 8,
+  "total": 11,
+  "recentAddedCount": 11,
   "recentAdded": [
+    {
+      "name": "截圖 2026-08-04 凌晨12.27.03.png",
+      "driveId": "1UoZXABMilPMsn4EKBk7Q2uipIG82tSj4",
+      "addedAt": "2026-08-03T16:28:43Z",
+      "bibs": [
+        "74877",
+        "75637"
+      ]
+    },
+    {
+      "name": "截圖 2026-08-04 凌晨12.27.12.png",
+      "driveId": "1zR6hQ5J476WQ-cL3MPIRcAVd_pGdTeSI",
+      "addedAt": "2026-08-03T16:28:43Z",
+      "bibs": [
+        "74877",
+        "75638"
+      ]
+    },
+    {
+      "name": "截圖 2026-08-04 凌晨12.27.19.png",
+      "driveId": "12TAyHeIoOxfses41gGfJ_hZOWvxQBs7X",
+      "addedAt": "2026-08-03T16:28:43Z",
+      "bibs": [
+        "74877",
+        "75637"
+      ]
+    },
     {
       "name": "截圖 2026-08-03 晚上11.36.09.png",
       "driveId": "1iFzw3_Om7DTxENmBkC5A_IP9PJs7USww",
@@ -157,6 +184,33 @@
         "05343"
       ],
       "addedAt": "2026-08-03T15:46:24Z"
+    },
+    {
+      "name": "截圖 2026-08-04 凌晨12.27.03.png",
+      "driveId": "1UoZXABMilPMsn4EKBk7Q2uipIG82tSj4",
+      "bibs": [
+        "74877",
+        "75637"
+      ],
+      "addedAt": "2026-08-03T16:28:43Z"
+    },
+    {
+      "name": "截圖 2026-08-04 凌晨12.27.12.png",
+      "driveId": "1zR6hQ5J476WQ-cL3MPIRcAVd_pGdTeSI",
+      "bibs": [
+        "74877",
+        "75638"
+      ],
+      "addedAt": "2026-08-03T16:28:43Z"
+    },
+    {
+      "name": "截圖 2026-08-04 凌晨12.27.19.png",
+      "driveId": "12TAyHeIoOxfses41gGfJ_hZOWvxQBs7X",
+      "bibs": [
+        "74877",
+        "75637"
+      ],
+      "addedAt": "2026-08-03T16:28:43Z"
     }
   ]
 }
