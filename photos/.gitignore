@@ -1,0 +1,5 @@
+# 活動照片目錄
+# 將 jpg / jpeg / png / webp 放於此後執行：
+#   python3 process_photos.py
+*
+!.gitignore

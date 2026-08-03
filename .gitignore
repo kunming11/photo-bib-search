@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.venv/
+venv/
+
+# 本機原圖不上傳 GitHub（改走 Google Drive）
+photos/*
+!photos/.gitignore
+
+# 本機對照表可能含內部連結，可自行決定是否提交
+drive_map.csv

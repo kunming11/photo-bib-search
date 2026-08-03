@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>活動相簿｜號碼布搜尋</title>
+    <meta name="description" content="輸入號碼布編號，快速找到並下載屬於你的活動照片。" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: {
+                50: "#f4f7f6",
+                100: "#e4ece9",
+                200: "#c5d5cf",
+                700: "#2f4a42",
+                800: "#1e332d",
+                900: "#13241f",
+              },
+              ember: {
+                400: "#f0a06a",
+                500: "#e8853d",
+                600: "#d06a22",
+              },
+            },
+            fontFamily: {
+              display: ['"Sora"', "sans-serif"],
+              body: ['"Noto Sans TC"', "sans-serif"],
+            },
+            boxShadow: {
+              soft: "0 18px 50px -24px rgba(19, 36, 31, 0.45)",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Sora:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* 柔和網格背景，營造活動現場氛圍（非扁平單色） */
+      body {
+        background-color: #f4f7f6;
+        background-image:
+          radial-gradient(ellipse 80% 50% at 50% -20%, rgba(232, 133, 61, 0.18), transparent),
+          radial-gradient(ellipse 60% 40% at 100% 0%, rgba(47, 74, 66, 0.08), transparent),
+          linear-gradient(rgba(30, 51, 45, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(30, 51, 45, 0.03) 1px, transparent 1px);
+        background-size: auto, auto, 48px 48px, 48px 48px;
+      }
+
+      .photo-card {
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+      .photo-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 22px 40px -20px rgba(19, 36, 31, 0.35);
+      }
+
+      .fade-in {
+        animation: fadeUp 0.35s ease both;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 搜尋鈕按下回饋 */
+      #search-btn:active {
+        transform: scale(0.98);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen font-body text-ink-900 antialiased">
+    <div class="mx-auto flex min-h-screen max-w-6xl flex-col px-4 pb-16 pt-10 sm:px-6 lg:px-8">
+      <!-- 品牌與標題（單一焦點：搜尋） -->
+      <header class="mb-10 text-center sm:mb-14">
+        <p class="font-display text-sm font-semibold tracking-[0.2em] text-ember-600 uppercase">
+          Corporate Event Album
+        </p>
+        <h1 class="mt-3 font-display text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl md:text-5xl">
+          活動相簿
+        </h1>
+        <p class="mx-auto mt-3 max-w-xl text-base text-ink-700/80 sm:text-lg">
+          輸入你的號碼布編號，立刻找到屬於你的活動照片並免費下載。
+        </p>
+      </header>
+
+      <!-- 搜尋區塊 -->
+      <section
+        class="mx-auto w-full max-w-xl rounded-2xl bg-white/90 p-5 shadow-soft ring-1 ring-ink-200/60 backdrop-blur sm:p-7"
+        aria-label="號碼布搜尋"
+      >
+        <label for="bib-input" class="mb-2 block text-sm font-medium text-ink-700">
+          輸入號碼布編號
+        </label>
+        <form id="search-form" class="flex flex-col gap-3 sm:flex-row" autocomplete="off">
+          <input
+            id="bib-input"
+            name="bib"
+            type="text"
+            inputmode="numeric"
+            placeholder="例如 1024"
+            class="w-full flex-1 rounded-xl border border-ink-200 bg-ink-50 px-4 py-3 text-lg tracking-wide text-ink-900 outline-none transition placeholder:text-ink-200 focus:border-ember-500 focus:ring-2 focus:ring-ember-400/40"
+            maxlength="16"
+            required
+          />
+          <button
+            id="search-btn"
+            type="submit"
+            class="inline-flex items-center justify-center rounded-xl bg-ink-800 px-6 py-3 font-display text-base font-semibold text-white transition hover:bg-ink-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500"
+          >
+            搜尋
+          </button>
+        </form>
+        <p id="status-text" class="mt-3 min-h-[1.25rem] text-sm text-ink-700/70" role="status" aria-live="polite"></p>
+      </section>
+
+      <!-- 結果網格 -->
+      <section class="mt-10 flex-1" aria-label="搜尋結果">
+        <div
+          id="results-meta"
+          class="mb-4 hidden items-baseline justify-between gap-2 font-display text-sm text-ink-700"
+        >
+          <span id="results-count"></span>
+        </div>
+        <div
+          id="results-grid"
+          class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+        ></div>
+        <!-- 初始／空狀態 -->
+        <div
+          id="empty-state"
+          class="mx-auto mt-8 max-w-md rounded-2xl border border-dashed border-ink-200 bg-white/50 px-6 py-12 text-center"
+        >
+          <p class="font-display text-lg font-semibold text-ink-800">準備好了嗎？</p>
+          <p class="mt-2 text-sm leading-relaxed text-ink-700/75">
+            在上方輸入號碼布編號後按下搜尋，符合條件的照片會顯示在這裡。
+          </p>
+        </div>
+      </section>
+
+      <footer class="mt-16 border-t border-ink-200/70 pt-6 text-center text-xs text-ink-700/60">
+        企業內部活動福利相簿 · 僅供員工下載使用
+      </footer>
+    </div>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
