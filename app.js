@@ -1,7 +1,6 @@
 /**
  * 活動相簿前端
- * - 讀取 data.json（含 total / updatedAt / recentAdded / photos）
- * - 號碼布搜尋；顯示總張數與最近新增時間
+ * - 讀取 data.json，以號碼布搜尋為唯一焦點
  */
 
 /**
@@ -17,8 +16,6 @@
  * @typedef {Object} AlbumData
  * @property {string=} updatedAt
  * @property {number=} total
- * @property {number=} recentAddedCount
- * @property {PhotoRecord[]=} recentAdded
  * @property {PhotoRecord[]} photos
  */
 
@@ -38,11 +35,8 @@ const els = {
   empty: document.getElementById("empty-state"),
   meta: document.getElementById("results-meta"),
   count: document.getElementById("results-count"),
-  statTotal: document.getElementById("stat-total"),
-  statRecent: document.getElementById("stat-recent"),
-  statSynced: document.getElementById("stat-synced"),
-  recentSection: document.getElementById("recent-section"),
-  recentGrid: document.getElementById("recent-grid"),
+  statLine: document.getElementById("stat-line"),
+  resultsSection: document.getElementById("results-section"),
 };
 
 function normalizeBib(value) {
@@ -198,12 +192,12 @@ function normalizeAlbumData(raw) {
 }
 
 function updateStats(album) {
-  els.statTotal.textContent = String(album.total ?? album.photos.length);
-  els.statRecent.textContent = String(album.recentAddedCount ?? album.recentAdded?.length ?? 0);
+  if (!els.statLine) return;
+  const total = album.total ?? album.photos.length;
   if (album.updatedAt) {
-    els.statSynced.textContent = `最後同步：${formatTaiwanTime(album.updatedAt)}（${formatRelative(album.updatedAt)}）· 硬碟變更後約 10 分鐘內自動更新`;
+    els.statLine.textContent = `目前共 ${total} 張照片 · 最後同步 ${formatTaiwanTime(album.updatedAt)}`;
   } else {
-    els.statSynced.textContent = "尚未有自動同步時間戳，請稍候再重新整理頁面";
+    els.statLine.textContent = `目前共 ${total} 張照片`;
   }
 }
 
@@ -325,21 +319,6 @@ function triggerAnchorDownload(href, filename) {
   a.remove();
 }
 
-function renderRecent(album) {
-  const recent = album.recentAdded || [];
-  els.recentGrid.innerHTML = "";
-  if (!recent.length) {
-    els.recentSection.classList.add("hidden");
-    return;
-  }
-  els.recentSection.classList.remove("hidden");
-  const frag = document.createDocumentFragment();
-  recent.forEach((record, i) => {
-    frag.appendChild(createPhotoCard(record, i, { showAddedAt: true }));
-  });
-  els.recentGrid.appendChild(frag);
-}
-
 function renderResults(matches, query) {
   els.grid.innerHTML = "";
   if (!matches.length) {
@@ -348,10 +327,11 @@ function renderResults(matches, query) {
     els.empty.innerHTML = `
       <p class="font-display text-lg font-semibold text-ink-800">找不到號碼「${escapeHtml(query)}」</p>
       <p class="mt-2 text-sm leading-relaxed text-ink-700/75">
-        若照片剛上傳，請稍候同步；新圖若顯示「號碼待辨識」，需再跑本機辨識才進得了搜尋。
+        請確認編號是否正確；若照片剛上傳，請稍候再試。
       </p>
     `;
     setStatus(`沒有符合號碼 ${query} 的照片。`, "info");
+    els.resultsSection?.scrollIntoView({ behavior: "smooth", block: "start" });
     return;
   }
 
@@ -364,6 +344,8 @@ function renderResults(matches, query) {
   matches.forEach((record, i) => frag.appendChild(createPhotoCard(record, i)));
   els.grid.appendChild(frag);
   setStatus(`找到 ${matches.length} 張照片。`, "ok");
+  // 結果就在搜尋框下方，捲動確保手機上也看得到
+  els.resultsSection?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function escapeHtml(str) {
@@ -407,7 +389,6 @@ async function loadPhotoIndex() {
     photoIndex = album.photos;
     dataReady = true;
     updateStats(album);
-    renderRecent(album);
     setStatus(`已載入 ${album.total} 張照片，請輸入號碼布搜尋。`, "ok");
   } catch (err) {
     console.error(err);

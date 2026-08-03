@@ -87,26 +87,10 @@
           活動相簿
         </h1>
         <p class="mx-auto mt-3 max-w-xl text-base text-ink-700/80 sm:text-lg">
-          輸入號碼布編號搜尋；硬碟新增照片後約數分鐘會自動同步上線。
+          輸入號碼布編號，立刻找到並下載你的活動照片。
         </p>
+        <p id="stat-line" class="mt-4 text-sm text-ink-700/70">相簿載入中…</p>
       </header>
-
-      <!-- 相簿統計 -->
-      <section
-        id="album-stats"
-        class="mx-auto mb-8 grid w-full max-w-xl grid-cols-2 gap-3 sm:gap-4"
-        aria-label="相簿統計"
-      >
-        <div class="rounded-2xl bg-white/90 px-4 py-4 text-center shadow-soft ring-1 ring-ink-200/60">
-          <p class="font-display text-xs font-semibold tracking-wide text-ink-700/70 uppercase">目前總張數</p>
-          <p id="stat-total" class="mt-1 font-display text-3xl font-bold text-ink-900">—</p>
-        </div>
-        <div class="rounded-2xl bg-white/90 px-4 py-4 text-center shadow-soft ring-1 ring-ink-200/60">
-          <p class="font-display text-xs font-semibold tracking-wide text-ink-700/70 uppercase">最近新增</p>
-          <p id="stat-recent" class="mt-1 font-display text-3xl font-bold text-ember-600">—</p>
-        </div>
-        <p id="stat-synced" class="col-span-2 text-center text-xs text-ink-700/65">同步資訊載入中…</p>
-      </section>
 
       <section
         class="mx-auto w-full max-w-xl rounded-2xl bg-white/90 p-5 shadow-soft ring-1 ring-ink-200/60 backdrop-blur sm:p-7"
@@ -137,19 +121,8 @@
         <p id="status-text" class="mt-3 min-h-[1.25rem] text-sm text-ink-700/70" role="status" aria-live="polite"></p>
       </section>
 
-      <!-- 最近新增 -->
-      <section id="recent-section" class="mt-10 hidden" aria-label="最近新增照片">
-        <div class="mb-4 flex items-end justify-between gap-3">
-          <div>
-            <h2 class="font-display text-xl font-semibold text-ink-900">最近新增</h2>
-            <p class="mt-1 text-sm text-ink-700/70">硬碟上傳後同步進來的照片（含時間）</p>
-          </div>
-        </div>
-        <div id="recent-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
-      </section>
-
-      <!-- 搜尋結果 -->
-      <section class="mt-10 flex-1" aria-label="搜尋結果">
+      <!-- 搜尋結果：緊接在搜尋框下方 -->
+      <section id="results-section" class="mt-8 flex-1" aria-label="搜尋結果">
         <div
           id="results-meta"
           class="mb-4 hidden items-baseline justify-between gap-2 font-display text-sm text-ink-700"
@@ -159,11 +132,11 @@
         <div id="results-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
         <div
           id="empty-state"
-          class="mx-auto mt-8 max-w-md rounded-2xl border border-dashed border-ink-200 bg-white/50 px-6 py-12 text-center"
+          class="mx-auto mt-6 max-w-md rounded-2xl border border-dashed border-ink-200 bg-white/50 px-6 py-10 text-center"
         >
-          <p class="font-display text-lg font-semibold text-ink-800">準備好了嗎？</p>
+          <p class="font-display text-lg font-semibold text-ink-800">輸入號碼開始搜尋</p>
           <p class="mt-2 text-sm leading-relaxed text-ink-700/75">
-            在上方輸入號碼布編號後按下搜尋；下方也會顯示最近從硬碟同步的新照片。
+            找到的照片會顯示在這裡。
           </p>
         </div>
       </section>
