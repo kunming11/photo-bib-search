@@ -103,6 +103,28 @@ def index_existing(photos: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     return by_key
 
 
+def apply_bibs_lock(photos: list[dict[str, Any]], lock_path: Path) -> list[dict[str, Any]]:
+    """用 bibs_lock.json 覆蓋／補上號碼，避免自動同步洗掉已辨識結果。"""
+    if not lock_path.exists():
+        return photos
+    try:
+        lock = json.loads(lock_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return photos
+    if not isinstance(lock, dict):
+        return photos
+
+    out: list[dict[str, Any]] = []
+    for p in photos:
+        item = dict(p)
+        drive_id = str(item.get("driveId") or "")
+        locked = lock.get(drive_id)
+        if isinstance(locked, list) and locked:
+            item["bibs"] = [str(b) for b in locked if str(b).strip()]
+        out.append(item)
+    return out
+
+
 def merge_photos(
     drive_files: list[dict[str, str]],
     existing_photos: list[dict[str, Any]],
@@ -203,6 +225,7 @@ def main() -> int:
     parser.add_argument("--folder", default="", help="資料夾連結或 ID（預設讀 config.json）")
     parser.add_argument("--config", type=Path, default=Path("config.json"))
     parser.add_argument("--data", type=Path, default=Path("data.json"))
+    parser.add_argument("--bibs-lock", type=Path, default=Path("bibs_lock.json"))
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
@@ -226,6 +249,7 @@ def main() -> int:
 
     now_iso = utc_now_iso()
     photos, newly = merge_photos(drive_files, existing_photos, now_iso)
+    photos = apply_bibs_lock(photos, args.bibs_lock)
     payload = build_payload(folder_id=folder_id, photos=photos, newly=newly, now_iso=now_iso)
 
     print(f"硬碟圖片 {len(drive_files)} 張｜索引總數 {payload['total']}｜本次新增 {len(newly)}")

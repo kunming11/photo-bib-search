@@ -1,15 +1,16 @@
 name: Sync Google Drive photos
 
+# 流程：硬碟上傳 → 本 Action 定時抓取 → OCR 補號碼 → 推送 → GitHub Pages 自動更新
 on:
   schedule:
-    # GitHub 繁忙時會延遲；改每 10 分鐘較穩
-    - cron: "*/10 * * * *"
+    # 每 5 分鐘（GitHub 忙碌時可能延遲到十幾分鐘）
+    - cron: "*/5 * * * *"
   workflow_dispatch:
-  # 推送程式碼時也順便同步一次，避免只有排程卻遲遲不跑
   push:
     branches: [main]
     paths-ignore:
       - "data.json"
+      - "bibs_lock.json"
       - "README.md"
       - "DEPLOY.md"
       - "CURSOR_PROMPT.md"
@@ -28,7 +29,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # 讓 bot 之後能 push
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -37,27 +37,43 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install Tesseract OCR
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr
+
       - name: Sync Drive folder → data.json
         id: sync
         run: |
           set -euo pipefail
           python3 sync_drive_to_data.py | tee sync.log
           if grep -q 'CHANGED=true' sync.log; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "sync_changed=true" >> "$GITHUB_OUTPUT"
           else
-            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "sync_changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: OCR photos missing bib numbers
+        id: ocr
+        run: |
+          set -euo pipefail
+          python3 ocr_missing_bibs.py --limit 30 | tee ocr.log
+          if grep -q 'CHANGED=true' ocr.log; then
+            echo "ocr_changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ocr_changed=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Commit and push if changed
-        if: steps.sync.outputs.changed == 'true'
+        if: steps.sync.outputs.sync_changed == 'true' || steps.ocr.outputs.ocr_changed == 'true'
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data.json
+          git add data.json bibs_lock.json
           if git diff --cached --quiet; then
             echo "No staged changes"
             exit 0
           fi
-          git commit -m "chore: sync Google Drive album ($(date -u +%Y-%m-%dT%H:%MZ))"
+          git commit -m "chore: auto-sync Drive album ($(date -u +%Y-%m-%dT%H:%MZ))"
           git push

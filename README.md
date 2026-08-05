@@ -9,17 +9,20 @@ OCR 只在本機批次執行；前端為純靜態網頁，零伺服器維護費�
 - 一張照片可對應多組號碼（`bibs` 陣列）
 - 企業內部福利，無金流
 
-## 自動同步（Google Drive → 網站）
+## 自動同步（丟上硬碟就會更新網頁）
 
-GitHub Actions 約 **每 5 分鐘** 讀取公開硬碟資料夾，更新 `data.json` 並推送；GitHub Pages 會自動重新發布。
+1. 把照片上傳到公開資料夾（「知道連結的任何人」可檢視）
+2. GitHub Actions **約每 5～15 分鐘**自動：
+   - 抓取硬碟檔案清單 → 更新 `data.json`
+   - 對新圖做 OCR 補號碼（Tesseract，免費）
+   - 推送後 GitHub Pages 自動上線
+3. 你只要重新整理網站即可搜尋
 
-- 網頁顯示：**目前總張數**、**最近新增**、**最後同步時間**
-- 新上傳的照片會出現在「最近新增」（含時間）
-- **號碼布搜尋**仍依賴索引裡的 `bibs`；全新照片若顯示「號碼待辨識」，請在本機對新圖跑 `process_photos.py` 後把號碼合併進 `data.json`（或跟我說一聲代勞）
+> 注意：GitHub 排程在繁忙時會延遲，不一定精準 5 分鐘。OCR 對模糊／浮水印照片可能辨識不全，之後仍可人工修正 `bibs_lock.json`。
 
-手動觸發同步：GitHub repo → Actions → **Sync Google Drive photos** → Run workflow
+手動觸發：GitHub → Actions → **Sync Google Drive photos** → Run workflow
 
-資料夾 ID 設定於 `config.json`。
+資料夾 ID 設定於 `config.json`。號碼布永久保存於 `bibs_lock.json`（同步時不會被洗掉）。
 
 
 ```bash
