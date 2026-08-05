@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-04T10:48:54Z",
+  "updatedAt": "2026-08-05T05:25:01Z",
   "folderId": "1Vajva5anAFBZA03gd1UsO9MjBO3yPEKs",
   "total": 12,
   "recentAddedCount": 12,
@@ -8,7 +8,10 @@
       "name": "IMG_9149.PNG",
       "driveId": "1Za1jXbP0saWlafQW8ekUDdlJmOuRwpin",
       "addedAt": "2026-08-04T10:48:54Z",
-      "bibs": []
+      "bibs": [
+        "11645",
+        "1646"
+      ]
     },
     {
       "name": "截圖 2026-08-04 凌晨12.27.03.png",
@@ -116,7 +119,10 @@
     {
       "name": "IMG_9149.PNG",
       "driveId": "1Za1jXbP0saWlafQW8ekUDdlJmOuRwpin",
-      "bibs": [],
+      "bibs": [
+        "11645",
+        "1646"
+      ],
       "addedAt": "2026-08-04T10:48:54Z"
     },
     {
