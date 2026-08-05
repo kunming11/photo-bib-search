@@ -1,6 +1,7 @@
 /**
  * 活動相簿前端
- * - 讀取 data.json，以號碼布搜尋為唯一焦點
+ * - 上方：號碼布搜尋（主焦點）
+ * - 下方：瀏覽全部小縮圖（每頁 15 張）
  */
 
 /**
@@ -27,6 +28,15 @@ let albumMeta = null;
 
 let dataReady = false;
 
+/** 瀏覽區每頁張數 */
+const BROWSE_PAGE_SIZE = 15;
+
+/** 瀏覽區目前頁碼（從 1 起） */
+let browsePage = 1;
+
+/** 目前瀏覽區選中的 driveId／檔名 */
+let browseSelectedKey = "";
+
 const els = {
   form: document.getElementById("search-form"),
   input: document.getElementById("bib-input"),
@@ -37,6 +47,12 @@ const els = {
   count: document.getElementById("results-count"),
   statLine: document.getElementById("stat-line"),
   resultsSection: document.getElementById("results-section"),
+  browseSection: document.getElementById("browse-section"),
+  browseGrid: document.getElementById("browse-grid"),
+  browseSummary: document.getElementById("browse-summary"),
+  browsePageLabel: document.getElementById("browse-page-label"),
+  browsePrev: document.getElementById("browse-prev"),
+  browseNext: document.getElementById("browse-next"),
 };
 
 function normalizeBib(value) {
@@ -84,6 +100,19 @@ function getPreviewUrl(record) {
     return `https://drive.google.com/thumbnail?id=${encodeURIComponent(driveId)}&sz=w2000`;
   }
   return encodeAssetUrl(record.file || "");
+}
+
+/** 瀏覽區用較小縮圖，加快翻頁 */
+function getBrowseThumbUrl(record) {
+  const driveId = extractDriveId(record.driveId || "") || extractDriveId(record.file || "");
+  if (driveId) {
+    return `https://drive.google.com/thumbnail?id=${encodeURIComponent(driveId)}&sz=w400`;
+  }
+  return encodeAssetUrl(record.file || "");
+}
+
+function recordKey(record) {
+  return String(record.driveId || record.file || record.name || "");
 }
 
 function getDownloadUrl(record) {
@@ -337,8 +366,85 @@ function searchByBib(rawQuery) {
     setStatus("相簿索引尚未就緒，請稍候再試。", "error");
     return;
   }
+  browseSelectedKey = "";
+  renderBrowsePage();
   const matches = photoIndex.filter((record) => recordMatchesBib(record, query));
   renderResults(matches, query);
+}
+
+/**
+ * 在上方結果區顯示單張（從瀏覽縮圖點入）
+ * @param {PhotoRecord} record
+ */
+function showBrowseDetail(record) {
+  browseSelectedKey = recordKey(record);
+  renderBrowsePage();
+  els.empty.classList.add("hidden");
+  els.meta.classList.remove("hidden");
+  els.meta.classList.add("flex");
+  els.count.textContent = `瀏覽預覽 · ${displayName(record)}`;
+  els.grid.innerHTML = "";
+  els.grid.appendChild(createPhotoCard(record, 0));
+  setStatus("可下載此照片，或繼續翻頁瀏覽。", "ok");
+  els.resultsSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function browseTotalPages() {
+  return Math.max(1, Math.ceil(photoIndex.length / BROWSE_PAGE_SIZE));
+}
+
+function renderBrowsePage() {
+  if (!els.browseGrid) return;
+  const total = photoIndex.length;
+  const pages = browseTotalPages();
+  if (browsePage > pages) browsePage = pages;
+  if (browsePage < 1) browsePage = 1;
+
+  const start = (browsePage - 1) * BROWSE_PAGE_SIZE;
+  const slice = photoIndex.slice(start, start + BROWSE_PAGE_SIZE);
+
+  if (els.browseSummary) {
+    els.browseSummary.textContent =
+      total === 0
+        ? "尚無照片"
+        : `共 ${total} 張 · 每頁最多 ${BROWSE_PAGE_SIZE} 張`;
+  }
+  if (els.browsePageLabel) {
+    els.browsePageLabel.textContent = total === 0 ? "" : `第 ${browsePage} / ${pages} 頁`;
+  }
+  if (els.browsePrev) els.browsePrev.disabled = browsePage <= 1 || total === 0;
+  if (els.browseNext) els.browseNext.disabled = browsePage >= pages || total === 0;
+
+  els.browseGrid.innerHTML = "";
+  const frag = document.createDocumentFragment();
+  slice.forEach((record) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className =
+      "browse-thumb aspect-square overflow-hidden rounded-lg bg-ink-100 ring-1 ring-ink-200/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500";
+    if (recordKey(record) === browseSelectedKey) {
+      btn.classList.add("is-active");
+    }
+    btn.title = displayName(record);
+    btn.setAttribute("aria-label", `預覽 ${displayName(record)}`);
+
+    const img = document.createElement("img");
+    img.src = getBrowseThumbUrl(record);
+    img.alt = displayName(record);
+    img.loading = "lazy";
+    img.referrerPolicy = "no-referrer";
+    img.className = "h-full w-full object-cover";
+    img.onerror = () => {
+      img.remove();
+      btn.classList.add("flex", "items-center", "justify-center", "p-2", "text-center", "text-[10px]", "text-ink-700/60");
+      btn.textContent = "無法預覽";
+    };
+
+    btn.appendChild(img);
+    btn.addEventListener("click", () => showBrowseDetail(record));
+    frag.appendChild(btn);
+  });
+  els.browseGrid.appendChild(frag);
 }
 
 async function loadPhotoIndex() {
@@ -359,7 +465,9 @@ async function loadPhotoIndex() {
     albumMeta = album;
     photoIndex = album.photos;
     dataReady = true;
+    browsePage = 1;
     updateStats(album);
+    renderBrowsePage();
     setStatus(`已載入 ${album.total} 張照片，請輸入號碼布搜尋。`, "ok");
   } catch (err) {
     console.error(err);
@@ -371,6 +479,22 @@ async function loadPhotoIndex() {
 els.form.addEventListener("submit", (event) => {
   event.preventDefault();
   searchByBib(els.input.value);
+});
+
+els.browsePrev?.addEventListener("click", () => {
+  if (browsePage > 1) {
+    browsePage -= 1;
+    renderBrowsePage();
+    els.browseSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+});
+
+els.browseNext?.addEventListener("click", () => {
+  if (browsePage < browseTotalPages()) {
+    browsePage += 1;
+    renderBrowsePage();
+    els.browseSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 });
 
 loadPhotoIndex();

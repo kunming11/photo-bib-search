@@ -92,6 +92,17 @@
       #search-btn:active {
         transform: scale(0.98);
       }
+      .browse-thumb {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .browse-thumb:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px -16px rgba(19, 36, 31, 0.4);
+      }
+      .browse-thumb.is-active {
+        outline: 2px solid #e8853d;
+        outline-offset: 2px;
+      }
     </style>
   </head>
   <body class="min-h-screen font-body text-ink-900 antialiased">
@@ -153,8 +164,43 @@
         >
           <p class="font-display text-lg font-semibold text-ink-800">輸入號碼開始搜尋</p>
           <p class="mt-2 text-sm leading-relaxed text-ink-700/75">
-            找到的照片會顯示在這裡。
+            找到的照片會顯示在這裡；也可到下方瀏覽全部縮圖。
           </p>
+        </div>
+      </section>
+
+      <!-- 瀏覽全部：小縮圖 + 每頁 15 張 -->
+      <section
+        id="browse-section"
+        class="mt-14 border-t border-ink-200/70 pt-10"
+        aria-label="瀏覽全部照片"
+      >
+        <div class="mb-5 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 class="font-display text-lg font-semibold text-ink-900">瀏覽全部照片</h2>
+            <p id="browse-summary" class="mt-1 text-sm text-ink-700/70">載入中…</p>
+          </div>
+          <p id="browse-page-label" class="text-sm text-ink-700/70"></p>
+        </div>
+        <div
+          id="browse-grid"
+          class="grid grid-cols-3 gap-2.5 sm:grid-cols-5 sm:gap-3"
+        ></div>
+        <div class="mt-5 flex items-center justify-center gap-3">
+          <button
+            id="browse-prev"
+            type="button"
+            class="rounded-xl bg-white px-4 py-2.5 font-display text-sm font-semibold text-ink-800 ring-1 ring-ink-200 transition hover:bg-ink-50 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            上一頁
+          </button>
+          <button
+            id="browse-next"
+            type="button"
+            class="rounded-xl bg-white px-4 py-2.5 font-display text-sm font-semibold text-ink-800 ring-1 ring-ink-200 transition hover:bg-ink-50 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            下一頁
+          </button>
         </div>
       </section>
 
