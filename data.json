@@ -1,9 +1,35 @@
 {
-  "updatedAt": "2026-08-05T05:25:01Z",
+  "updatedAt": "2026-08-07T00:33:07Z",
   "folderId": "1Vajva5anAFBZA03gd1UsO9MjBO3yPEKs",
-  "total": 12,
-  "recentAddedCount": 12,
+  "total": 15,
+  "recentAddedCount": 4,
   "recentAdded": [
+    {
+      "name": "IMG_9323.PNG",
+      "driveId": "1WA4mTZjAZZ4xYi1PVOGCOsFKvW6rZju-",
+      "addedAt": "2026-08-07T00:33:04Z",
+      "bibs": [
+        "225",
+        "202"
+      ]
+    },
+    {
+      "name": "IMG_9324.PNG",
+      "driveId": "1kis5b_KmKrVUen14yJGNkNHpPT7l-Jtr",
+      "addedAt": "2026-08-07T00:33:04Z",
+      "bibs": [
+        "383"
+      ]
+    },
+    {
+      "name": "IMG_9325.PNG",
+      "driveId": "1RSQ5grf3jXAY1beC8XIXlQdJXwUOq0e-",
+      "addedAt": "2026-08-07T00:33:04Z",
+      "bibs": [
+        "2025",
+        "345"
+      ]
+    },
     {
       "name": "IMG_9149.PNG",
       "driveId": "1Za1jXbP0saWlafQW8ekUDdlJmOuRwpin",
@@ -11,107 +37,6 @@
       "bibs": [
         "11645",
         "1646"
-      ]
-    },
-    {
-      "name": "截圖 2026-08-04 凌晨12.27.03.png",
-      "driveId": "1UoZXABMilPMsn4EKBk7Q2uipIG82tSj4",
-      "addedAt": "2026-08-03T16:28:43Z",
-      "bibs": [
-        "74877",
-        "75637"
-      ]
-    },
-    {
-      "name": "截圖 2026-08-04 凌晨12.27.12.png",
-      "driveId": "1zR6hQ5J476WQ-cL3MPIRcAVd_pGdTeSI",
-      "addedAt": "2026-08-03T16:28:43Z",
-      "bibs": [
-        "74877",
-        "75638"
-      ]
-    },
-    {
-      "name": "截圖 2026-08-04 凌晨12.27.19.png",
-      "driveId": "12TAyHeIoOxfses41gGfJ_hZOWvxQBs7X",
-      "addedAt": "2026-08-03T16:28:43Z",
-      "bibs": [
-        "74877",
-        "75637"
-      ]
-    },
-    {
-      "name": "截圖 2026-08-03 晚上11.36.09.png",
-      "driveId": "1iFzw3_Om7DTxENmBkC5A_IP9PJs7USww",
-      "addedAt": "2026-08-03T15:46:24Z",
-      "bibs": [
-        "09316",
-        "03612",
-        "06356",
-        "05848",
-        "08799"
-      ]
-    },
-    {
-      "name": "截圖 2026-08-03 晚上11.36.19.png",
-      "driveId": "1CIebhePSxZ830rhqEv-UHfurKoNz2tjE",
-      "addedAt": "2026-08-03T15:46:24Z",
-      "bibs": [
-        "06335"
-      ]
-    },
-    {
-      "name": "截圖 2026-08-03 晚上11.36.33.png",
-      "driveId": "1oCoWkiWwh-OJleGmYCGip3q-7AGcWhmg",
-      "addedAt": "2026-08-03T15:46:24Z",
-      "bibs": [
-        "05343"
-      ]
-    },
-    {
-      "name": "截圖 2026-08-03 晚上11.30.09.png",
-      "driveId": "19GSqonNHpwJW--CENDPTDtuKj7nlHnOT",
-      "addedAt": "2026-08-03T15:35:46Z",
-      "bibs": [
-        "06380"
-      ]
-    },
-    {
-      "name": "截圖 2026-08-03 晚上11.07.48.png",
-      "driveId": "1FZOlX-nHQmoed90xtlYEf-vJvbWWg2Kn",
-      "addedAt": "2026-08-03T15:00:00Z",
-      "bibs": [
-        "10009",
-        "11484"
-      ]
-    },
-    {
-      "name": "截圖 2026-08-03 晚上11.08.06.png",
-      "driveId": "1p4RVtAuX-KA58mh7wcY-jbFz67_GpwrK",
-      "addedAt": "2026-08-03T15:00:00Z",
-      "bibs": [
-        "15176"
-      ]
-    },
-    {
-      "name": "截圖 2026-08-03 晚上11.08.22.png",
-      "driveId": "1VzhfZqQkqEmeDHEAMRj_wSY2lp2qyffE",
-      "addedAt": "2026-08-03T15:00:00Z",
-      "bibs": [
-        "10008"
-      ]
-    },
-    {
-      "name": "截圖 2026-08-03 晚上11.08.35.png",
-      "driveId": "1Gjfbj3HALzkPPiY98Ofmpf6I38TgYVK2",
-      "addedAt": "2026-08-03T15:00:00Z",
-      "bibs": [
-        "07346",
-        "08479",
-        "02091",
-        "04331",
-        "09054",
-        "06771"
       ]
     }
   ],
@@ -124,6 +49,32 @@
         "1646"
       ],
       "addedAt": "2026-08-04T10:48:54Z"
+    },
+    {
+      "name": "IMG_9323.PNG",
+      "driveId": "1WA4mTZjAZZ4xYi1PVOGCOsFKvW6rZju-",
+      "bibs": [
+        "225",
+        "202"
+      ],
+      "addedAt": "2026-08-07T00:33:04Z"
+    },
+    {
+      "name": "IMG_9324.PNG",
+      "driveId": "1kis5b_KmKrVUen14yJGNkNHpPT7l-Jtr",
+      "bibs": [
+        "383"
+      ],
+      "addedAt": "2026-08-07T00:33:04Z"
+    },
+    {
+      "name": "IMG_9325.PNG",
+      "driveId": "1RSQ5grf3jXAY1beC8XIXlQdJXwUOq0e-",
+      "bibs": [
+        "2025",
+        "345"
+      ],
+      "addedAt": "2026-08-07T00:33:04Z"
     },
     {
       "name": "截圖 2026-08-03 晚上11.07.48.png",
