@@ -56,7 +56,7 @@ const els = {
 };
 
 function normalizeBib(value) {
-  return String(value ?? "").trim();
+  return String(value ?? "").trim().toUpperCase();
 }
 
 function stripLeadingZeros(value) {
@@ -74,7 +74,11 @@ function recordMatchesBib(record, query) {
   return bibs.some((bib) => {
     const exact = normalizeBib(bib);
     if (exact === q) return true;
-    return stripLeadingZeros(exact) === qLoose;
+    if (stripLeadingZeros(exact) === qLoose) return true;
+    // 字母+數字號碼布：輸入 031 / E031 都可對到 E031
+    if (/^[A-Z]\d+$/.test(exact) && exact.slice(1) === q) return true;
+    if (/^[A-Z]\d+$/.test(exact) && stripLeadingZeros(exact.slice(1)) === qLoose) return true;
+    return false;
   });
 }
 
