@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-09T09:29:43Z",
+  "updatedAt": "2026-08-09T09:33:36Z",
   "folderId": "1Vajva5anAFBZA03gd1UsO9MjBO3yPEKs",
   "total": 50,
   "recentAddedCount": 50,
@@ -64,7 +64,9 @@
       "name": "IMG_2521.JPG",
       "driveId": "1Hk--iZ8RXJIMW9kQUoYOsCCyB2yUGU3c",
       "addedAt": "2026-08-09T08:51:35Z",
-      "bibs": []
+      "bibs": [
+        "407"
+      ]
     },
     {
       "name": "IMG_2526.JPG",
@@ -94,7 +96,10 @@
       "name": "IMG_2537.JPG",
       "driveId": "1yjOpWcvRk6NAWDjDGpCybgPBZijNvKwj",
       "addedAt": "2026-08-09T08:51:35Z",
-      "bibs": []
+      "bibs": [
+        "366",
+        "188"
+      ]
     },
     {
       "name": "IMG_2549.JPG",
@@ -207,13 +212,19 @@
       "name": "IMG_2577.JPG",
       "driveId": "1iBqHwcWFSyppaP601mbMomqDLDj2BlsL",
       "addedAt": "2026-08-09T08:51:35Z",
-      "bibs": []
+      "bibs": [
+        "444",
+        "758"
+      ]
     },
     {
       "name": "IMG_2578.JPG",
       "driveId": "1cSplj8gUr6OjSbbSrrfODb5yDX-n7EXp",
       "addedAt": "2026-08-09T08:51:35Z",
-      "bibs": []
+      "bibs": [
+        "538",
+        "135"
+      ]
     },
     {
       "name": "IMG_2583.JPG",
@@ -308,7 +319,9 @@
     {
       "name": "IMG_2521.JPG",
       "driveId": "1Hk--iZ8RXJIMW9kQUoYOsCCyB2yUGU3c",
-      "bibs": [],
+      "bibs": [
+        "407"
+      ],
       "addedAt": "2026-08-09T08:51:35Z"
     },
     {
@@ -338,7 +351,10 @@
     {
       "name": "IMG_2537.JPG",
       "driveId": "1yjOpWcvRk6NAWDjDGpCybgPBZijNvKwj",
-      "bibs": [],
+      "bibs": [
+        "366",
+        "188"
+      ],
       "addedAt": "2026-08-09T08:51:35Z"
     },
     {
@@ -451,13 +467,19 @@
     {
       "name": "IMG_2577.JPG",
       "driveId": "1iBqHwcWFSyppaP601mbMomqDLDj2BlsL",
-      "bibs": [],
+      "bibs": [
+        "444",
+        "758"
+      ],
       "addedAt": "2026-08-09T08:51:35Z"
     },
     {
       "name": "IMG_2578.JPG",
       "driveId": "1cSplj8gUr6OjSbbSrrfODb5yDX-n7EXp",
-      "bibs": [],
+      "bibs": [
+        "538",
+        "135"
+      ],
       "addedAt": "2026-08-09T08:51:35Z"
     },
     {
@@ -629,7 +651,9 @@
     {
       "name": "IMG_2641.JPG",
       "driveId": "1aF33C8nKIWj0k_KyvXtqPg-imnaADQf3",
-      "bibs": [],
+      "bibs": [
+        "616"
+      ],
       "addedAt": "2026-08-09T08:51:35Z"
     },
     {
