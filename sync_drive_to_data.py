@@ -38,8 +38,11 @@ def extract_folder_id(value: str) -> str:
     raise ValueError("無法辨識資料夾 ID")
 
 
-def fetch_folder_html(folder_id: str) -> str:
-    url = f"https://drive.google.com/drive/folders/{folder_id}?usp=sharing"
+def fetch_folder_html(folder_id: str, *, embedded: bool = False) -> str:
+    if embedded:
+        url = f"https://drive.google.com/embeddedfolderview?id={folder_id}#list"
+    else:
+        url = f"https://drive.google.com/drive/folders/{folder_id}?usp=sharing"
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
 
     def _open(ctx: ssl.SSLContext) -> str:
@@ -53,8 +56,8 @@ def fetch_folder_html(folder_id: str) -> str:
         return _open(ssl._create_unverified_context())  # noqa: S323
 
 
-def parse_drive_files(html: str) -> list[dict[str, str]]:
-    """從公開資料夾頁面解析 [{name, driveId}, ...]。"""
+def parse_drive_files_from_folder_page(html: str) -> list[dict[str, str]]:
+    """從一般資料夾頁解析（常只含前約 50 筆，易漏檔）。"""
     pairs = re.findall(
         r'data-id="([a-zA-Z0-9_-]{20,})"[^>]*data-tooltip="([^"]+?)\s+Image"',
         html,
@@ -77,6 +80,62 @@ def parse_drive_files(html: str) -> list[dict[str, str]]:
         seen.add(drive_id)
         out.append({"name": name, "driveId": drive_id})
     return out
+
+
+def parse_drive_files_from_embedded(html: str) -> list[dict[str, str]]:
+    """
+    從 embeddedfolderview 解析完整清單（通常比一般頁面完整）。
+    結構：<div class="flip-entry" id="entry-FILEID"> ... flip-entry-title>NAME<
+    """
+    image_ext = (".jpg", ".jpeg", ".png", ".webp", ".gif", ".heic", ".JPG", ".JPEG", ".PNG", ".WEBP", ".GIF")
+    parts = re.split(r'<div class="flip-entry"', html)[1:]
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    for part in parts:
+        mid = re.search(r'\bid="entry-([a-zA-Z0-9_-]+)"', part)
+        title = re.search(r"flip-entry-title[^>]*>([^<]+)<", part)
+        if not mid or not title:
+            continue
+        drive_id = mid.group(1)
+        name = title.group(1).strip()
+        if not name or drive_id in seen:
+            continue
+        if not name.endswith(image_ext):
+            # 略過資料夾或其他非圖片
+            continue
+        seen.add(drive_id)
+        out.append({"name": name, "driveId": drive_id})
+    return out
+
+
+def parse_drive_files(html: str) -> list[dict[str, str]]:
+    """相容舊呼叫：先當一般頁解析。"""
+    return parse_drive_files_from_folder_page(html)
+
+
+def list_drive_folder_images(folder_id: str) -> list[dict[str, str]]:
+    """列出資料夾內圖片：優先 embedded（完整），不足再併一般頁結果。"""
+    by_id: dict[str, dict[str, str]] = {}
+
+    try:
+        embed_html = fetch_folder_html(folder_id, embedded=True)
+        for item in parse_drive_files_from_embedded(embed_html):
+            by_id[item["driveId"]] = item
+        print(f"embeddedfolderview 解析到 {len(by_id)} 張")
+    except Exception as exc:  # noqa: BLE001
+        print(f"embeddedfolderview 失敗：{exc}")
+
+    try:
+        page_html = fetch_folder_html(folder_id, embedded=False)
+        page_items = parse_drive_files_from_folder_page(page_html)
+        print(f"一般資料夾頁解析到 {len(page_items)} 張")
+        for item in page_items:
+            by_id.setdefault(item["driveId"], item)
+    except Exception as exc:  # noqa: BLE001
+        print(f"一般資料夾頁失敗：{exc}")
+
+    # 依檔名排序，結果穩定
+    return sorted(by_id.values(), key=lambda x: x["name"].lower())
 
 
 def load_existing(path: Path) -> dict[str, Any]:
@@ -241,8 +300,7 @@ def main() -> int:
     existing_photos = existing_doc.get("photos") or []
 
     print(f"讀取 Drive 資料夾 {folder_id} …")
-    html = fetch_folder_html(folder_id)
-    drive_files = parse_drive_files(html)
+    drive_files = list_drive_folder_images(folder_id)
     if not drive_files:
         print("錯誤：沒有解析到任何圖片。請確認資料夾為公開「知道連結的任何人」。", file=sys.stderr)
         return 1
